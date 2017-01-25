@@ -641,7 +641,7 @@ upgradeCabal :: (StackM env m, HasConfig env, HasGHCVariant env)
              -> m ()
 upgradeCabal menv wc = do
     let name = $(mkPackageName "Cabal")
-    rmap <- resolvePackages menv Nothing Map.empty (Set.singleton name)
+    rmap <- resolvePackages Nothing Map.empty (Set.singleton name)
     newest <-
         case map rpIdent rmap of
             [] -> error "No Cabal library found in index, cannot upgrade"
@@ -666,7 +666,7 @@ upgradeCabal menv wc = do
                 ]
             let ident = PackageIdentifier name newest
             -- Nothing below: use the newest .cabal file revision
-            m <- unpackPackageIdents menv tmpdir Nothing (Map.singleton ident Nothing)
+            m <- unpackPackageIdents tmpdir Nothing (Map.singleton ident Nothing)
 
             compilerPath <- join $ findExecutable menv (compilerExeName wc)
             newestDir <- parseRelDir $ versionString newest
